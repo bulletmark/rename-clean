@@ -1,4 +1,4 @@
-## RENAME-CLEAN - Replace Undesirable Characters with Underscores in Linux File Names
+## RENAME-CLEAN - Replace Undesirable Characters in Linux File Names
 [![PyPi](https://img.shields.io/pypi/v/rename-clean)](https://pypi.org/project/rename-clean/)
 
 The [`rename-clean`][rename-clean] command line utility replaces

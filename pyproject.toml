@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rename-clean"
-description = "Utility to replace undesirable characters with underscores in Linux file names"
+description = "Utility to replace undesirable characters in Linux file names"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 requires-python = ">=3.8"
