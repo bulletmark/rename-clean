@@ -84,8 +84,8 @@ To uninstall:
 $ uv tool uninstall rename-clean
 ```
 
-Alternatively, run it immediately without explicitly installing it by using the
-[`uvx`][uvx] command:
+Alternatively, run it immediately using [`uvx`][uvx] without explicit
+installation by typing `uvx rename-clean`.
 
 ## Command Line Options
 
