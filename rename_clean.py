@@ -2,10 +2,10 @@
 """
 Utility to replace undesirable characters with underscores in Linux file names.
 Undesirable characters are any that are not ASCII alphanumeric (`0-9`, `a-z`,
-`A-Z`), underscore (`_`), hyphen (`-`), or dot (`.`). Repeated underscores are
-reduced to a single underscore and also trimmed from the name stem and suffix.
-A unique name is always created by appending a number on the name stem if
-necessary.
+`A-Z`), underscore (`_`), hyphen (`-`), or dot (`.`). If characters are
+replaced, then repeated underscores are also reduced to a single underscore and
+trimmed from the name stem and suffix. A unique name is always created by
+appending a number on the name stem if necessary.
 """
 
 # Author: Mark Blakeney, Jul 2025.
@@ -33,7 +33,7 @@ class REMAPPER:
         self.quiet = args.quiet
         self.recurse_symlinks = args.recurse_symlinks
         self.ignore_hidden = args.ignore_hidden
-        self.less_aggressive = args.less_aggressive
+        self.more_aggressive = args.more_aggressive
         self.character = args.character
 
         self.map = re.compile(r'[^-.\w' + self.character + args.add + ']+', re.ASCII)
@@ -51,7 +51,7 @@ class REMAPPER:
 
         # Replace undesirable characters with an underscore.
         name = self.map.sub(self.character, pname)
-        if name == pname and self.less_aggressive:
+        if name == pname and not self.more_aggressive:
             return None
 
         # Remove multiple underscores
@@ -60,7 +60,8 @@ class REMAPPER:
         # Remove leading and trailing underscores on stem and suffix
         newpath = Path(name)
         stem = newpath.stem.strip(self.character) or self.character
-        suffix = newpath.suffix.strip(self.character)
+        if (suffix := newpath.suffix.strip(self.character)) == '.':
+            suffix = ''
 
         # If the name is unchanged, return None
         if (name := (stem + suffix)) == pname:
@@ -134,10 +135,10 @@ def main() -> None:
         help='recurse into symbolic directory links, default is to rename a link but not recurse into it',
     )
     opt.add_argument(
-        '-l',
-        '--less-aggressive',
+        '-m',
+        '--more-aggressive',
         action='store_true',
-        help='do not replace underscores unless deletions have been done',
+        help='Replace underscores even if deletions have not been done',
     )
     opt.add_argument(
         '-c',

@@ -1,12 +1,13 @@
 ## RENAME-CLEAN - Replace Undesirable Characters in Linux File Names
 [![PyPi](https://img.shields.io/pypi/v/rename-clean)](https://pypi.org/project/rename-clean/)
 
-The [`rename-clean`][rename-clean] command line utility replaces
-undesirable characters with underscores in Linux file names. Undesirable
-characters are any that are not ASCII alphanumeric (`0-9`, `a-z`, `A-Z`),
-underscore (`_`), hyphen (`-`), or dot (`.`). Repeated underscores are reduced
-to a single underscore and also trimmed from the name stem and suffix. A unique
-name is always created by appending a number on the name stem if necessary.
+The [`rename-clean`][rename-clean] command line utility replaces undesirable
+characters with underscores in Linux file names. Undesirable characters are any
+that are not ASCII alphanumeric (`0-9`, `a-z`, `A-Z`), underscore (`_`), hyphen
+(`-`), or dot (`.`). If characters are replaced, then repeated underscores are
+also reduced to a single underscore and trimmed from the name stem and suffix.
+A unique name is always created by appending a number on the name stem if
+necessary.
 
 I use it after downloading an archive of files from the internet such as a
 torrent to remove spaces, emojis, and other odd characters from the file names.
@@ -92,16 +93,16 @@ installation by typing `uvx rename-clean`.
 Type `rename-clean -h` to view the usage summary:
 
 ```
-usage: rename-clean [-h] [-r] [-d] [-q] [-i] [-s] [-l] [-c CHARACTER]
+usage: rename-clean [-h] [-r] [-d] [-q] [-i] [-s] [-m] [-c CHARACTER]
                        [-a ADD]
                        [path ...]
 
 Utility to replace undesirable characters with underscores in Linux file
 names. Undesirable characters are any that are not ASCII alphanumeric (`0-9`,
-`a-z`, `A-Z`), underscore (`_`), hyphen (`-`), or dot (`.`). Repeated
-underscores are reduced to a single underscore and also trimmed from the name
-stem and suffix. A unique name is always created by appending a number on the
-name stem if necessary.
+`a-z`, `A-Z`), underscore (`_`), hyphen (`-`), or dot (`.`). If characters are
+replaced, then repeated underscores are also reduced to a single underscore
+and trimmed from the name stem and suffix. A unique name is always created by
+appending a number on the name stem if necessary.
 
 positional arguments:
   path                  one or more file or directory names to rename, or "-"
@@ -118,8 +119,8 @@ options:
   -s, --recurse-symlinks
                         recurse into symbolic directory links, default is to
                         rename a link but not recurse into it
-  -l, --less-aggressive
-                        do not replace underscores unless deletions have been
+  -m, --more-aggressive
+                        Replace underscores even if deletions have not been
                         done
   -c, --character CHARACTER
                         character to replace undesirable characters with,
