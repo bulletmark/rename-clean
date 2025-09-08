@@ -138,7 +138,7 @@ def main() -> None:
         '-m',
         '--more-aggressive',
         action='store_true',
-        help='Replace underscores even if deletions have not been done',
+        help='replace repeated underscores even if there are no other replacements',
     )
     opt.add_argument(
         '-c',

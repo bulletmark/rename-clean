@@ -120,8 +120,8 @@ options:
                         recurse into symbolic directory links, default is to
                         rename a link but not recurse into it
   -m, --more-aggressive
-                        Replace underscores even if deletions have not been
-                        done
+                        replace repeated underscores even if there are no
+                        other replacements
   -c, --character CHARACTER
                         character to replace undesirable characters with,
                         default = "_"
