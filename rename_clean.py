@@ -17,7 +17,7 @@ import shlex
 import sys
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
-from typing import Iterable
+from collections.abc import Iterable
 
 from platformdirs import user_config_path
 
