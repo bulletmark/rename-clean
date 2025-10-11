@@ -13,16 +13,13 @@ from __future__ import annotations
 
 import itertools
 import re
-import shlex
 import sys
-from argparse import ArgumentParser, Namespace
-from pathlib import Path
 from collections.abc import Iterable
+from pathlib import Path
 
-from platformdirs import user_config_path
+from argparse_from_file import ArgumentParser, Namespace  # type: ignore[import]
 
 PROG = Path(sys.argv[0]).stem
-CNFFILE = user_config_path() / f'{PROG}-flags.conf'
 
 
 class REMAPPER:
@@ -106,9 +103,7 @@ class REMAPPER:
 def main() -> None:
     "Main code"
     # Process command line options
-    opt = ArgumentParser(
-        description=__doc__, epilog=f'Note you can set default options in {CNFFILE}'
-    )
+    opt = ArgumentParser(description=__doc__)
     opt.add_argument(
         '-r',
         '--recurse',
@@ -161,16 +156,7 @@ def main() -> None:
         'Default is all files in current directory if no path given.',
     )
 
-    # Merge in default args from user config file. Then parse the
-    # command line.
-    if CNFFILE.exists():
-        with CNFFILE.open() as fp:
-            lines = [re.sub(r'#.*$', '', line).strip() for line in fp]
-        cnflines = ' '.join(lines).strip()
-    else:
-        cnflines = ''
-
-    args = opt.parse_args(shlex.split(cnflines) + sys.argv[1:])
+    args = opt.parse_args()
 
     if args.dryrun:
         args.quiet = False
