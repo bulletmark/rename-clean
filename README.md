@@ -12,6 +12,9 @@ necessary.
 I use it after downloading an archive of files from the internet such as a
 torrent to remove spaces, emojis, and other odd characters from the file names.
 
+If run from within a [`git`](https://git-scm.com/) repository, `git mv` is used
+to rename tracked files/directories. Non-tracked files are renamed normally.
+
 Example usage follows:
 
 Clean up all file and directory names in the current directory:
@@ -94,7 +97,7 @@ Type `rename-clean -h` to view the usage summary:
 
 ```
 usage: rename-clean [-h] [-r] [-d] [-q] [-i] [-s] [-m] [-c CHARACTER]
-                       [-a ADD]
+                       [-a ADD] [-G] [-g]
                        [path ...]
 
 Utility to replace undesirable characters with underscores in Linux file
@@ -102,7 +105,8 @@ names. Undesirable characters are any that are not ASCII alphanumeric (`0-9`,
 `a-z`, `A-Z`), underscore (`_`), hyphen (`-`), or dot (`.`). If characters are
 replaced, then repeated underscores are also reduced to a single underscore
 and trimmed from the name stem and suffix. A unique name is always created by
-appending a number on the name stem if necessary.
+appending a number on the name stem if necessary. If run from within a git
+repository, `git mv` is used to rename tracked files/directories.
 
 positional arguments:
   path                  one or more file or directory names to rename, or "-"
@@ -127,8 +131,11 @@ options:
                         default = "_"
   -a, --add ADD         additional characters to allow in names, e.g. "+%"
                         (default: only alphanumeric, "_", "-", and ".")
+  -G, --no-git          do not use git if invoked within a git repository
+  -g, --git             negate the --no-git option and DO use automatic git
 
-Note you can set default options in $HOME/.config/rename_clean-flags.conf
+Note you can set default starting options in ~/.config/rename-clean-
+flags.conf.
 ```
 
 ## License
