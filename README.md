@@ -9,8 +9,9 @@ also reduced to a single underscore and trimmed from the name stem and suffix.
 A unique name is always created by appending a number on the name stem if
 necessary.
 
-I use it after downloading an archive of files from the internet such as a
-torrent to remove spaces, emojis, and other odd characters from the file names.
+An example of where I use it is after downloading an archive of files from the
+internet such as a torrent to remove spaces, emojis, and other odd characters
+from the file names.
 
 If run from within a [`git`](https://git-scm.com/) repository, `git mv` is used
 to rename tracked files/directories. Non-tracked files are renamed normally.
