@@ -20,7 +20,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Sequence
 
-from argparse_from_file import ArgumentParser, Namespace  # type: ignore[import]
+from argparse_from_file import ArgumentParser, Namespace
 
 PROG = Path(sys.argv[0]).stem
 
