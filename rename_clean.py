@@ -3,10 +3,10 @@
 Utility to replace undesirable characters with underscores in Linux file names.
 Undesirable characters are any that are not ASCII alphanumeric (`0-9`, `a-z`,
 `A-Z`), underscore (`_`), hyphen (`-`), or dot (`.`). If characters are
-replaced, then repeated underscores are also reduced to a single underscore and
-trimmed from the name stem and suffix. A unique name is always created by
-appending a number on the name stem if necessary. If run from within a git
-repository, `git mv` is used to rename tracked files/directories.
+replaced by underscores, then repeated underscores are also reduced to a single
+underscore and trimmed from the name stem and suffix. A unique name is always
+created by appending a number on the name stem if necessary. If run from within
+a git repository, `git mv` is used to rename tracked files/directories.
 """
 
 # Author: Mark Blakeney, Jul 2025.
