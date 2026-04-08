@@ -219,13 +219,7 @@ def main() -> None:
     args._map = re.compile(r'[^-.\w' + args.character + args.add + ']+', re.ASCII)
     args._reduce = re.compile('\\' + args.character + '+')
 
-    if args._map.match(args.character):
-        sys.exit(
-            f'Error: -c/--character "{args.character}" is one of the undesirable characters.'
-        )
-
     rename_paths(args, (Path(a) for a in paths))
-
 
 if __name__ == '__main__':
     main()
