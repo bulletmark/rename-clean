@@ -214,7 +214,7 @@ def main() -> None:
         if args.recurse:
             opt.error('Error: -r/--recurse cannot be used with stdin input.')
 
-        paths = [ln.rstrip('\r\n') for ln in sys.stdin]
+        paths = (ln.rstrip('\r\n') for ln in sys.stdin)
 
     args._map = re.compile(r'[^-.\w' + args.character + args.add + ']+', re.ASCII)
     args._reduce = re.compile('\\' + args.character + '+')
