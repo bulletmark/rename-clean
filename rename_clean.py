@@ -50,7 +50,7 @@ def rename(src: Path, dst: Path) -> bool:
     "Rename a file or directory, using git if possible"
     srcstr = str(src)
     if srcstr in gitfiles:
-        out, err = run(('git', 'mv', '--', srcstr, str(dst)))
+        _, err = run(('git', 'mv', '--', srcstr, str(dst)))
         if err:
             print(f'Git rename error: {err}', file=sys.stderr)
             return False
@@ -60,82 +60,63 @@ def rename(src: Path, dst: Path) -> bool:
     return True
 
 
-class REMAPPER:
-    def __init__(self, args: Namespace):
-        # Save options from command line arguments
-        self.recurse = args.recurse
-        self.dryrun = args.dryrun
-        self.quiet = args.quiet
-        self.recurse_symlinks = args.recurse_symlinks
-        self.ignore_hidden = args.ignore_hidden
-        self.more_aggressive = args.more_aggressive
-        self.character = args.character
-
-        self.map = re.compile(r'[^-.\w' + self.character + args.add + ']+', re.ASCII)
-        self.reduce = re.compile('\\' + self.character + '+')
-
-        if self.map.match(args.character):
-            sys.exit(
-                f'Error: -c/--character "{args.character}" is one of the undesirable characters.'
-            )
-
-    def make_new_name(self, path: Path) -> Path | None:
-        "Make a new path name by replacing characters"
-        if not (pname := path.name):
-            return None
-
-        # Replace undesirable characters with an underscore.
-        name = self.map.sub(self.character, pname)
-        if name == pname and not self.more_aggressive:
-            return None
-
-        # Remove multiple underscores
-        name = self.reduce.sub(self.character, name)
-
-        # Remove leading and trailing underscores on stem and suffix
-        newpath = Path(name)
-        stem = newpath.stem.strip(self.character) or self.character
-        if (suffix := newpath.suffix.strip(self.character)) == '.':
-            suffix = ''
-
-        # If the name is unchanged, return None
-        if (name := (stem + suffix)) == pname:
-            return None
-
-        # Ensure a new name that does not already exist
-        for n in itertools.count(2):
-            newpath = path.with_name(name)
-            if not newpath.exists():
-                return newpath
-
-            name = f'{stem}{self.character}{n}{suffix}'
-
+def make_new_name(args: Namespace, path: Path) -> Path | None:
+    "Make a new path name by replacing characters"
+    if not (pname := path.name):
         return None
 
-    def rename_paths(self, dirs: Iterable[Path], top: bool = True) -> None:
-        "Rename files and directories for the given paths"
-        for path in dirs:
-            if self.ignore_hidden and path.name.startswith('.'):
-                continue
+    # Replace undesirable characters with an underscore.
+    name = args._map.sub(args.character, pname)
+    if name == pname and not args.more_aggressive:
+        return None
 
-            if not (is_dir := path.is_dir()) and top and not path.exists():
-                print(f'Path does not exist: {path}', file=sys.stderr)
-                continue
+    # Remove multiple underscores
+    name = args._reduce.sub(args.character, name)
 
-            if newpath := self.make_new_name(path):
-                if not self.quiet:
-                    add = '/' if is_dir else ''
-                    print(f'Renaming "{path}{add}" -> "{newpath}{add}"')
+    # Remove leading and trailing underscores on stem and suffix
+    newpath = Path(name)
+    stem = newpath.stem.strip(args.character) or args.character
+    if (suffix := newpath.suffix.strip(args.character)) == '.':
+        suffix = ''
 
-                if not self.dryrun:
-                    if rename(path, newpath):
-                        path = newpath
+    # If the name is unchanged, return None
+    if (name := (stem + suffix)) == pname:
+        return None
 
-            if is_dir and (
-                top
-                or (self.recurse and (not path.is_symlink() or self.recurse_symlinks))
-            ):
-                self.rename_paths(path.iterdir(), False)
+    # Ensure a new name that does not already exist
+    for n in itertools.count(2):
+        newpath = path.with_name(name)
+        if not newpath.exists():
+            return newpath
+
+        name = f'{stem}{args.character}{n}{suffix}'
+
+    return None
+
+
+def rename_paths(args: Namespace, paths: Iterable[Path], top: bool = True) -> None:
+    "Rename files and directories for the given paths"
+    for path in paths:
+        if args.ignore_hidden and path.name.startswith('.'):
+            continue
+
+        if not (is_dir := path.is_dir()) and top and not path.exists():
+            print(f'Path does not exist: {path}', file=sys.stderr)
+            continue
+
+        if newpath := make_new_name(args, path):
+            if not args.quiet:
+                add = '/' if is_dir else ''
+                print(f'Renaming "{path}{add}" -> "{newpath}{add}"')
+
+            if not args.dryrun:
+                if rename(path, newpath):
+                    path = newpath
+
+        if is_dir and (
+            top or (args.recurse and (not path.is_symlink() or args.recurse_symlinks))
+        ):
+            rename_paths(args, path.iterdir(), False)
 
 
 def main() -> None:
@@ -235,8 +216,15 @@ def main() -> None:
 
         paths = [ln.rstrip('\r\n') for ln in sys.stdin]
 
-    if paths:
-        REMAPPER(args).rename_paths(Path(a) for a in paths)
+    args._map = re.compile(r'[^-.\w' + args.character + args.add + ']+', re.ASCII)
+    args._reduce = re.compile('\\' + args.character + '+')
+
+    if args._map.match(args.character):
+        sys.exit(
+            f'Error: -c/--character "{args.character}" is one of the undesirable characters.'
+        )
+
+    rename_paths(args, (Path(a) for a in paths))
 
 
 if __name__ == '__main__':
