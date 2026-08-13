@@ -97,9 +97,9 @@ installation by typing `uvx rename-clean`.
 Type `rename-clean -h` to view the usage summary:
 
 ```
-usage: rename-clean [-h] [-r] [-d] [-q] [-i] [-s] [-m] [-c CHARACTER]
-                       [-a ADD] [-G] [-g]
-                       [path ...]
+usage: rename-clean [-h] [-r] [-d] [-q] [-i] [-s] [-m] [-c CHARACTER] [-a ADD]
+                    [-G] [-g]
+                    [path ...]
 
 Utility to replace undesirable characters with underscores in Linux file
 names. Undesirable characters are any that are not ASCII alphanumeric (`0-9`,

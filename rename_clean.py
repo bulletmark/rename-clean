@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Utility to replace undesirable characters with underscores in Linux file names.
 Undesirable characters are any that are not ASCII alphanumeric (`0-9`, `a-z`,
@@ -32,9 +31,7 @@ def run(cmd: Sequence[str]) -> tuple[str, str]:
     stdout = ''
     stderr = ''
     try:
-        res = subprocess.run(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True
-        )
+        res = subprocess.run(cmd, capture_output=True, text=True)
     except Exception as e:
         stderr = str(e)
     else:
@@ -109,9 +106,8 @@ def rename_paths(args: Namespace, paths: Iterable[Path], top: bool = True) -> No
                 add = '/' if is_dir else ''
                 print(f'Renaming "{path}{add}" -> "{newpath}{add}"')
 
-            if not args.dryrun:
-                if rename(path, newpath):
-                    path = newpath
+            if not args.dryrun and rename(path, newpath):
+                path = newpath
 
         if is_dir and (
             top or (args.recurse and (not path.is_symlink() or args.recurse_symlinks))
