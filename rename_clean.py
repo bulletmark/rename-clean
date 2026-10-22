@@ -13,11 +13,9 @@ from __future__ import annotations
 
 import itertools
 import re
-import subprocess
 import sys
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import Sequence
 
 from argparse_from_file import ArgumentParser, Namespace
 
@@ -28,6 +26,8 @@ gitfiles = set()
 
 def run(cmd: Sequence[str]) -> tuple[str, str]:
     "Run given command and return (stdout, stderr) strings"
+    import subprocess
+
     stdout = ''
     stderr = ''
     try:
@@ -216,6 +216,7 @@ def main() -> None:
     args._reduce = re.compile('\\' + args.character + '+')
 
     rename_paths(args, (Path(a) for a in paths))
+
 
 if __name__ == '__main__':
     main()
