@@ -4,8 +4,7 @@ Undesirable characters are any that are not ASCII alphanumeric (`0-9`, `a-z`,
 `A-Z`), underscore (`_`), hyphen (`-`), or dot (`.`). If characters are
 replaced by underscores, then repeated underscores are also reduced to a single
 underscore and trimmed from the name stem and suffix. A unique name is always
-created by appending a number on the name stem if necessary. If run from within
-a git repository, `git mv` is used to rename tracked files/directories.
+created by appending a number on the name stem if necessary.
 """
 
 # Author: Mark Blakeney, Jul 2025.
@@ -20,8 +19,6 @@ from pathlib import Path
 from argparse_from_file import ArgumentParser, Namespace
 
 PROG = Path(sys.argv[0]).stem
-
-gitfiles = set()
 
 
 def run(cmd: Sequence[str]) -> tuple[str, str]:
@@ -41,20 +38,6 @@ def run(cmd: Sequence[str]) -> tuple[str, str]:
             stderr = res.stderr.strip()
 
     return stdout, stderr
-
-
-def rename(src: Path, dst: Path) -> bool:
-    "Rename a file or directory, using git if possible"
-    srcstr = str(src)
-    if srcstr in gitfiles:
-        _, err = run(('git', 'mv', '--', srcstr, str(dst)))
-        if err:
-            print(f'Git rename error: {err}', file=sys.stderr)
-            return False
-    else:
-        src.rename(dst)
-
-    return True
 
 
 def make_new_name(args: Namespace, path: Path) -> Path | None:
@@ -106,7 +89,8 @@ def rename_paths(args: Namespace, paths: Iterable[Path], top: bool = True) -> No
                 add = '/' if is_dir else ''
                 print(f'Renaming "{path}{add}" -> "{newpath}{add}"')
 
-            if not args.dryrun and rename(path, newpath):
+            if not args.dryrun:
+                path.rename(newpath)
                 path = newpath
 
         if is_dir and (
@@ -164,22 +148,6 @@ def main() -> None:
         '(default: only alphanumeric, "_", "-", and ".")',
     )
     opt.add_argument(
-        '-G',
-        '--no-git',
-        dest='git',
-        action='store_const',
-        const=0,
-        help='do not use git if invoked within a git repository',
-    )
-    opt.add_argument(
-        '-g',
-        '--git',
-        dest='git',
-        action='store_const',
-        const=1,
-        help='negate the --no-git option and DO use automatic git',
-    )
-    opt.add_argument(
         'path',
         nargs='*',
         default=['.'],
@@ -194,16 +162,6 @@ def main() -> None:
 
     if len(args.character) != 1:
         opt.error('Error: -c/--character must be a single character.')
-
-    if args.git != 0:
-        out, giterr = run(('git', 'ls-files'))
-        if giterr and args.git:
-            print(f'Git invocation error: {giterr}', file=sys.stderr)
-        if out:
-            gitfiles.update(out.splitlines())
-
-        if args.git and not gitfiles:
-            opt.error('must be within a git repo to use -g/--git option')
 
     # Read stdin if single dash is given as path
     if len(paths := args.path) == 1 and paths[0] == '-':
