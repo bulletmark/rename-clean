@@ -6,8 +6,8 @@ characters with underscores in Linux file names. Undesirable characters are any
 that are not ASCII alphanumeric (`0-9`, `a-z`, `A-Z`), underscore (`_`), hyphen
 (`-`), or dot (`.`). If characters are replaced by underscores, then repeated
 underscores are also reduced to a single underscore and trimmed from the name
-stem and suffix. A unique name is always created by appending a number on the
-name stem if necessary.
+stem and suffix for files, or from the name for directories. A unique name is
+always created by appending a number on the name stem if necessary.
 
 An example of where I use it is after downloading an archive of files from the
 internet such as a torrent to remove spaces, emojis, and other odd characters
@@ -18,7 +18,7 @@ Example usage follows:
 Clean up all file and directory names in the current directory:
 
 ```sh
-$ rename-clean (or rename-clean .)
+$ rename-clean
 ```
 
 Clean up all file and directory names in the current directory and recursively
@@ -28,7 +28,7 @@ under any child directories:
 $ rename-clean -r
 ```
 
-Clean up all all jpeg file names in current directory:
+Clean up all jpeg file names in current directory:
 
 ```sh
 $ rename-clean *.jpg
@@ -46,7 +46,7 @@ option as described in the [Command Default Options](#command-default-options)
 section below:
 
 ```sh
-$ rename-clean -a '+%'
+$ rename-clean -a='+%'
 ```
 
 You can run with the `-d/--dryrun` option to see what would be changed without
@@ -66,7 +66,7 @@ options](#command-line-options).
 
 ## Installation or Upgrade
 
-Python 3.8 or later is required. Note [`rename-clean` is on
+Python 3.9 or later is required. Note [`rename-clean` is on
 PyPI](https://pypi.org/project/rename-clean/) so the easiest way to install it is to
 use [`uv tool`][uvtool].
 
@@ -94,15 +94,16 @@ installation by typing `uvx rename-clean`.
 Type `rename-clean -h` to view the usage summary:
 
 ```
-usage: rename-clean [-h] [-r] [-d] [-q] [-i] [-s] [-m] [-c CHARACTER] [-a ADD]
+usage: rename-clean [-h] [-r] [-d] [-q] [-i] [-m] [-c CHARACTER] [-a ADD]
                     [path ...]
 
 Utility to replace undesirable characters with underscores in Linux file
 names. Undesirable characters are any that are not ASCII alphanumeric (`0-9`,
 `a-z`, `A-Z`), underscore (`_`), hyphen (`-`), or dot (`.`). If characters are
 replaced by underscores, then repeated underscores are also reduced to a
-single underscore and trimmed from the name stem and suffix. A unique name is
-always created by appending a number on the name stem if necessary.
+single underscore and trimmed from the file name stem and suffix, or from the
+directory name. A unique name is always created by appending a number on the
+name stem if necessary.
 
 positional arguments:
   path                  one or more file or directory names to rename, or "-"
@@ -111,21 +112,19 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  -r, --recurse         recurse through all sub directories
+  -r, --recurse         recurse through all sub directories (not including
+                        symlinks)
   -d, --dryrun          do not rename, just show what would be done
   -q, --quiet           do not report changes
   -i, --ignore-hidden   ignore hidden files and directories (those starting
                         with ".")
-  -s, --recurse-symlinks
-                        recurse into symbolic directory links, default is to
-                        rename a link but not recurse into it
   -m, --more-aggressive
                         replace repeated underscores even if there are no
                         other replacements
   -c, --character CHARACTER
                         character to replace undesirable characters with,
                         default = "_"
-  -a, --add ADD         additional characters to allow in names, e.g. "+%"
+  -a, --add ADD         additional characters to allow in names, e.g. "-a=+%"
                         (default: only alphanumeric, "_", "-", and ".")
 
 Note you can set default starting options in ~/.config/rename-clean-

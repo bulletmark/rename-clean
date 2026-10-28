@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0", "setuptools-scm[toml]>=6.2"]
+requires = ["setuptools>=77.0", "setuptools-scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,7 +7,7 @@ name = "rename-clean"
 description = "Utility to replace undesirable characters in Linux file names"
 readme = "README.md"
 license = "GPL-3.0-or-later"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 keywords = ["rename", "mv"]
 dynamic = ["version"]
 dependencies = [
@@ -31,6 +31,6 @@ version_scheme = "post-release"
 quote-style = "single"
 
 [tool.ruff.lint]
-ignore = ["SIM115", "SIM905", "BLE001", "PLW1510", "S110"]
+ignore = ["SIM115", "SIM905", "BLE001", "PLW1510", "S110", "DTZ", "C408", "PLC0206"]
 
 # vim:se sw=2:
