@@ -106,6 +106,17 @@ class Renamer:
             if args.ignore_hidden and path.name.startswith('.'):
                 continue
 
+            if args.symlinks_remove and path.is_symlink():
+                try:
+                    path.unlink()
+                except OSError as e:
+                    print_err(f'Error: {e}')
+                    self.err_count += 1
+                else:
+                    if not args.quiet:
+                        print(f'Removed symlink: "{path}"')
+                continue
+
             if newpath := self.make_new_name(path, is_dir := path.is_dir()):
                 if not args.quiet:
                     add = '/' if is_dir else ''
@@ -165,6 +176,13 @@ def main() -> int:
         '--more-aggressive',
         action='store_true',
         help='replace repeated underscores even if there are no other replacements',
+    )
+    opt.add_argument(
+        '-s',
+        '--symlinks-remove',
+        action='store_true',
+        help='remove symlinks instead of renaming them, to avoid potentially '
+        'leaving broken links',
     )
     opt.add_argument(
         '-c',

@@ -94,7 +94,7 @@ installation by typing `uvx rename-clean`.
 Type `rename-clean -h` to view the usage summary:
 
 ```
-usage: rename-clean [-h] [-r] [-d] [-q] [-i] [-m] [-c CHARACTER] [-a ADD]
+usage: rename-clean [-h] [-r] [-d] [-q] [-i] [-m] [-s] [-c CHARACTER] [-a ADD]
                     [path ...]
 
 Utility to replace undesirable characters with underscores in Linux file
@@ -121,6 +121,9 @@ options:
   -m, --more-aggressive
                         replace repeated underscores even if there are no
                         other replacements
+  -s, --symlinks-remove
+                        remove symlinks instead of renaming them, to avoid
+                        potentially leaving broken links
   -c, --character CHARACTER
                         character to replace undesirable characters with,
                         default = "_"
